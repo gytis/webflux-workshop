@@ -35,11 +35,17 @@
 		</dependency>
 		<!-- tag::vertx[] -->
 		<dependency>
-		  <groupId>me.snowdrop</groupId>
-		  <artifactId>vertx-spring-boot-http</artifactId>
-		  <version>0.0.1-SNAPSHOT</version>
+			<groupId>me.snowdrop</groupId>
+			<artifactId>vertx-spring-boot-http</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<!-- end::vertx[] -->
+		<!-- tag::inMemMongo[] -->
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+		</dependency>
+		<!-- end::inMemMongo[] -->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
