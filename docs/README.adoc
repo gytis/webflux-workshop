@@ -4,11 +4,11 @@ Brian Clozel, Violeta Georgieva - Pivotal
 :source-highlighter: prettify
 :icons: font
 :toc: 
-:spring-boot-version: 2.0.2.RELEASE
-:spring-framework-version: 5.0.6.RELEASE
+:spring-boot-version: 2.1.4.RELEASE
+:spring-framework-version: 5.1.6.RELEASE
 :spring-framework-doc-base: http://docs.spring.io/spring-framework/docs/{spring-framework-version}
 
-This repository hosts a complete workshop on Spring Boot + Spring WebFlux.
+This repository hosts a complete workshop on Spring Boot + Spring WebFlux + Vert.x.
 Just follow this README and create your first WebFlux applications!
 Each step of this workshop has its companion commit in the git history with a detailed commit message.
 
@@ -42,6 +42,15 @@ If generated right, you should have a main `Application` class that looks like t
 include::../stock-quotes/src/main/java/io/spring/workshop/stockquotes/StockQuotesApplication.java[]
 ----
 
+Edit your `pom.xml` file to replace `org.springframework.boot:spring-boot-starter-webflux` dependency with `me.snowdrop:vertx-spring-boot-http:0.0.1-SNAPSHOT`
+
+[source,xml]
+.stock-quotes/pom.xml
+----
+include::../stock-quotes/pom.xml[tags=vertx]
+----
+
+
 Edit your `application.properties` file to start the server on a specific port.
 
 [source,properties]
@@ -50,14 +59,7 @@ Edit your `application.properties` file to start the server on a specific port.
 include::../stock-quotes/src/main/resources/application.properties[]
 ----
 
-Launching it from your IDE or with `mvn spring-boot:run` should start a Netty server on port 8081.
-You should see in the logs something like:
-
-[source,bash]
-----
-INFO 2208 --- [  restartedMain] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port(s): 8081
-INFO 2208 --- [  restartedMain] i.s.w.s.StockQuotesApplication           : Started StockQuotesApplication in 1.905 seconds (JVM running for 3.075)
-----
+Launching it from your IDE or with `mvn spring-boot:run` should start a Vert.x server on port 8081.
 
 === Create a Quote Generator
 
@@ -210,19 +212,13 @@ with groupId `io.spring.workshop` and artifactId `trading-service`. Select the `
 , `Devtools`, `Thymeleaf` and `Reactive Mongo` Boot starters.
 Unzip the given file into a directory and import that application into your IDE.
 
-=== Use Tomcat as a web engine
-
-By default, `spring-boot-starter-webflux` transitively brings `spring-boot-starter-reactor-netty`
-and Spring Boot auto-configures Reactor Netty as a web server. For this application, we'll use
-Tomcat as an alternative.
+Edit your `pom.xml` file to replace `org.springframework.boot:spring-boot-starter-webflux` dependency with `me.snowdrop:vertx-spring-boot-http:0.0.1-SNAPSHOT`
 
 [source,xml]
 .trading-service/pom.xml
 ----
-include::../trading-service/pom.xml[tags=tomcat]
+include::../trading-service/pom.xml[tags=vertx]
 ----
-
-Note that Spring Boot supports as well Undertow and Jetty.
 
 === Use a reactive datastore
 
@@ -343,8 +339,6 @@ Now implement `handle(WebSocketSession session)` method. The handler echoes the 
 
 To route requests to that handler, you need to map the above WebSocket handler to a specific URL: here, `"/websocket/echo"`.
 Create a `WebSocketRouter` configuration class (i.e. annotated with `@Configuration`) that creates a bean of type `HandlerMapping`.
-Create one additional bean of type `WebSocketHandlerAdapter` which will delegate the processing of
-the incoming request to the default `WebSocketService` which is `HandshakeWebSocketService`.
 
 Now create a `WebSocketController` annotated with @Controller and add a method that renders the
 `websocket.html` template for incoming `"GET /websocket"` requests.
